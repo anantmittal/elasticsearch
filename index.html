@@ -1,0 +1,163 @@
+<html>
+<head>
+    <title>Elastic Search</title>
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Quicksand" />
+    <link rel="stylesheet" type="text/css" href="css/pretty-json.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+    <!-- lib -->
+    <script type="text/javascript" src="libs/jquery-1.11.1.min.js" ></script>
+    <script type="text/javascript" src="libs/underscore-min.js" ></script>
+    <script type="text/javascript" src="libs/backbone-min.js" ></script>
+
+    
+    <script type="text/javascript" src="build/pretty-json-min.js" ></script>
+
+    
+</head>
+
+<body>
+<script>
+    $(document).ready(function() {
+
+        var el = {
+            result: $('#result')
+        };
+
+     
+       var Query=Backbone.Model.extend({
+            url: 'query.php',
+            idAttrib: 'searchText',
+            defaults:{
+                searchText:'',
+                result:''
+            }
+        });
+
+		var View_search=Backbone.View.extend({
+            el: $("#form_elastic"),
+            events:{
+                'submit #search_form': 'submitQuery',
+                'change #d_param':'fnChangetype'
+            },
+            submitQuery:function(e){
+                e.preventDefault();
+                $('#result').html('');
+                var d_size_type=$("#d_param").val();
+                var dt='';
+                var d_val='';
+                switch(d_size_type){
+                    case '1':
+                            dt='equal';
+                            d_val='&start=' + $('#start').val();
+                            break;
+                    case '2':
+                            dt='range';
+                            d_val='&start=' + $('#start').val() + '&end='+ $('#end').val();
+                            break;
+                    case '3':
+                            dt='less';
+                            d_val='&start=' + $('#start').val();
+                            break;
+                    case '4':
+                            d_val='&start=' + $('#start').val();
+                            dt='greater';
+                            break;
+                    default:
+                            return;
+                }
+                var data=$('#query').val();
+                if(data.trim()==''){
+                    data='*';
+                }else{
+                    data=encodeURI(data.trim());
+                } 
+                var query=new Query({
+                    searchText : data
+                });
+                query.fetch({url:'query.php?searchText='+data+'&d_typ='+dt+d_val,success:function(response){
+                   
+                   	var json = decodeURI(JSON.stringify(response));
+
+
+	                var data;
+                    try{ 
+                        data = JSON.parse(json); 
+                    }
+                    catch(e){ 
+                        alert('not valid JSON');
+                        return;
+                    }
+                    //$('#result').html(json);
+
+                    
+                    var node = new PrettyJSON.view.Node({ 
+                        el:el.result,
+                        data: data,
+
+                      //  dateFormat:"DD/MM/YYYY - HH24:MI:SS"
+                    });
+
+                    node.expandAll();
+                    
+                    //console.log(JSON.stringify(data));
+                }
+            });
+            },
+            fnChangetype:function(e){
+                e.preventDefault();
+                var d_size=$("#d_param").val();
+                switch(d_size){
+                    case '1':
+                            $('#end').val(''); 
+                            $('#end').hide(100);
+                            break;
+                    case '2':
+                            $('#end').val(''); 
+                            $('#end').show(100);
+                            break;
+                    case '3':
+                            $('#end').val(''); 
+                             $('#end').hide(100);
+                            break;
+                    case '4':
+                            $('#end').val(''); 
+                            $('#end').hide(100);
+                            break;
+                    default:
+                            return;
+                }
+
+            },
+            render: function(){
+                var that=this;
+                var template_form=_.template($("#template_search_form").html());
+                that.$el.html(template_form);
+            }
+        });    
+        var c=new View_search();
+        c.render();
+
+    });
+</script>
+<h1 id="title_search">Elastic Search</h1>
+<div id="form_elastic"></div>
+
+<span id="result"></span>
+
+<script type="text/template" id="template_search_form">
+    <form id="search_form">
+        <input type="text" name="query" id="query" value="" />
+        <select id="d_param">
+            <option value="1">Equals</option>
+            <option value="2">Range</option>
+            <option value="3">Less Than</option>
+            <option value="4">Greater Than</option>
+        </select>
+        <input type="text" id="start" />
+        <input type="text" id="end" />
+        <button type="submit" id="search_btn">Search</button>
+    </form>
+</script>
+</body>
+</html>

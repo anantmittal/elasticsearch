@@ -1,0 +1,22 @@
+body{
+            max-width:960px;
+            width:90%;
+            border-style: none;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #title_search{
+            font-family: Quicksand, sans-serif;
+        }
+
+        #form_elastic{
+            font-family: Quicksand, sans-serif;    
+        }
+        #form_elastic input, #form_elastic select, #form_elastic button{
+            font-family: Arial;    
+            padding: 5px 15px;
+        }        
+        #form_elastic #end{
+            display: none;
+        }
