@@ -1,5 +1,22 @@
 # Welcome to the elasticsearch wiki!
 
+This will help you index the ([MySQL Table](https://github.com/anantmittal/elasticsearch/blob/master/pixpa.sql)) into elasticsearch, and also create a simple web interface to make the following queries possible :
+## 1.) Simple keyword based query : 
+a.) Marvel : should give all super hero from Marvel
+***
+
+b.) Marvel villains : should give all villans from Marvel comics
+
+## 2.) Range queries :
+a.) Hero's with Di#k size greater than 50
+***
+
+b.) Hero's with Di#k size between 1-10
+***
+
+c.) Villains with Di#k size less than 3
+
+
 ## Insall Elastic Search in Ubuntu 
 
 `cd ~`
@@ -17,7 +34,8 @@
 ## Install JDBC river plugin
 `./bin/plugin -url http://bit.ly/10FJhEd -install river-jdbc`
 
-## Download MySQL JDBC driver from http://dev.mysql.com/downloads/connector/j/
+## Download MySQL JDBC driver from 
+http://dev.mysql.com/downloads/connector/j/
 
 ### Now,
 `unzip mysql-connector-java-5.1.30.zip`
